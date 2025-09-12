@@ -1,0 +1,16 @@
+#!/bin/bash
+if [ ! "$1" = "powersave" ] && [ ! "$1" = "schedutil" ] ; then
+	echo "Usage: $0 [powersave|schedutil]"
+	exit 1
+fi
+
+TEMPLATE=conf/template.conf
+DEST=/tmp/tmp-tlp-config.conf
+COPY="conf/$1.conf"
+
+cp "$TEMPLATE" "$DEST"
+sed -e '/{{DRIVER_MODE}}/ {' -e "r $COPY" -e 'd' -e '}' -i "$DEST"
+
+sudo cp "$DEST" /etc/tlp.d/10-yoga.conf
+sudo systemctl restart tlp
+

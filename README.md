@@ -1,5 +1,6 @@
 # Lenovo 15ILL9 
 (also goes by Lenovo Yoga Slim 7i Aura)
+
 ## Environment
 * Kernel 6.16
 * OpenSUSE Tumbleweed
@@ -9,12 +10,15 @@
 ## TLP (EAS scheduler)
 Install `tlp` and enable with `systemctl enable --now tlp`. Ensure you are on kernel 6.16 or later to make use of Intel Energy Aware Scheduling using the `schedutil` governor. It is required to set `intel_pstate=passive` manually or via TLP to make use of it.
 
-If you'd like, you can experiment with disabling this setting, since it might actually *lower* power usage in some workloads. The only effect this will have is that load will be evenly distributed among all P and E-cores. 
+The script `enable` can be used to do this. If you'd like, run `./enable schedutil` to use EAS and `./enable powersave` to use the traditional driver. This will automatically apply the changes to TLP for you in the directory `/etc/tlp.d/` (ensure nothing is conflicting). You can experiment with disabling EAS, since it might actually *lower* power usage in some workloads. The only effect this will have is that load will be evenly distributed among all P and E-cores. 
 
 Verify changes with `tlp-stat -p`.
 
 ## Sound
 Install `sof-firmware` to fix sound.
+
+## Suspend
+Sleep disables fans upon resume. To enable hibernation you must change the power management settings and extend your swap page to your RAM size (16 or 32).
 
 ## Codecs
 On OpenSUSE, you can install codecs by installing `opi` and running `opi codecs`.
