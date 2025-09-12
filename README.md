@@ -1,5 +1,5 @@
-# Lenovo 15ILL9 (ugly name: Lenovo Yoga Slim 7i Aura)
-
+# Lenovo 15ILL9 
+(also goes by Lenovo Yoga Slim 7i Aura)
 ## Environment
 * Kernel 6.16
 * OpenSUSE Tumbleweed
@@ -25,9 +25,9 @@ Verify that `intel-media-driver` is installed and that `libva-intel-driver` or `
 
 In Firefox, ensure you've done these things:
 
-1. type about:config in the address bar.
-2. in the search bar type gfx.webrender.all and set it to true.
-3. in the search bar type media.ffmpeg.vaapi.enabled and set it to true.
+1. type `about:config` in the address bar.
+2. in the search bar type `gfx.webrender.all` and set it to true.
+3. in the search bar type `media.ffmpeg.vaapi.enabled` and set it to true.
 
 These are probably already done for you.
 
