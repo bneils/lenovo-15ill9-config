@@ -26,10 +26,13 @@ Verify that `intel-media-driver` is installed and that `libva-intel-driver` or `
 In Firefox, ensure you've done these things:
 
 1. type `about:config` in the address bar.
-2. in the search bar type `gfx.webrender.all` and set it to true.
-3. in the search bar type `media.ffmpeg.vaapi.enabled` and set it to true.
+2. type `gfx.webrender.all` and set it to true.
+3. type `media.ffmpeg.vaapi.enabled` and set it to true.
+4. type `gfx.webrender.software` and set it to false.
+5. type `layers.acceleration.force-enabled` and set it to true.
+6. type `layers.force-active` and set it to true.
 
-These are probably already done for you.
+Firefox has poor defaults, so some of the above options might not be enabled by default. The `layers.*` options force hardware acceleration to be enabled.
 
 [Source](https://www.reddit.com/r/linux/comments/xcikym/tutorial_how_to_enable_hardware_video/)
 
