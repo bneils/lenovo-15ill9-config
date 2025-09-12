@@ -31,6 +31,8 @@ In Firefox, ensure you've done these things:
 4. type `gfx.webrender.software` and set it to false.
 5. type `layers.acceleration.force-enabled` and set it to true.
 6. type `layers.force-active` and set it to true.
+7. type `media.rdd-vpx.enabled` and set it to true.
+8. type `gfx.webrender.direct` and set it to true.
 
 Firefox has poor defaults, so some of the above options might not be enabled by default. The `layers.*` options force hardware acceleration to be enabled.
 

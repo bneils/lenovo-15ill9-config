@@ -1,0 +1,43 @@
+#!/bin/bash
+
+# For the Thinkpad T480
+
+DIR=/sys/class/power_supply
+
+# arg1: BAT0 or BAT1 that is charging
+show_est() {
+  power=$(cat "$DIR/$1/power_now")
+  bat0_ef=$(cat "$DIR/BAT0/energy_full")
+  bat1_ef=$(cat "$DIR/BAT1/energy_full")
+  bat0_et=$(cat "$DIR/BAT0/charge_control_end_threshold")
+  bat1_et=$(cat "$DIR/BAT1/charge_control_end_threshold")
+  final=$(("($bat0_ef * $bat0_et + $bat1_ef * $bat1_et) / 100"))
+  charge0=$(cat "$DIR/BAT0/energy_now")
+  charge1=$(cat "$DIR/BAT1/energy_now")
+  ttf=$(("60 * ($final - $charge0 - $charge1) / $power"))
+  hours=$(("$ttf / 60"))
+  mins=$(printf "%02d" $(("$ttf % 60")))
+  echo "$hours":"$mins"
+}
+
+# arg1: BAT0 or BAT1 that is discharging
+report_watts() {
+  # Take a reading in microwatts, then take the integer half
+  # and the decimal half and concatenate them using a period.
+  power=$(cat "$DIR/$1/power_now")
+  if [ ! "$power" = "" ]
+  then 
+    trunc=$(("$power / 1000000"))
+    dec=$(("$power % 1000000 / 100000"))
+    echo "$trunc.$dec W"
+  fi
+}
+
+bat0_status=$(cat "$DIR/BAT0/status")
+
+if [ "$bat0_status" = "Discharging" ]
+then report_watts BAT0
+elif [ "$bat0_status" = "Charging" ]
+then show_est BAT0
+fi
+
