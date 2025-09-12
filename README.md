@@ -39,3 +39,19 @@ Firefox has poor defaults, so some of the above options might not be enabled by 
 [Source](https://www.reddit.com/r/linux/comments/xcikym/tutorial_how_to_enable_hardware_video/)
 
 Open `about:support` and verify you see the line "Compositing: WebRender" and not "WebRender (Software)".
+
+## Display
+
+Here are three suggestions to decrease power usage in instances where Wayland is using a lot of your CPU:
+
+1. Decrease brightness.
+
+One major power drain is the display. Using a high brightness level can drain your battery, and some numbers suggest that power increases at about 0.4 watts / 10% brightness. You may want to purchase a matte screen film if your screen is glossy.
+
+2. Set your display to 60 Hz.
+
+If you are watching YouTube, you should set your display to 60 Hz as there is no difference, and it reduces the workload by your GPU.
+
+3. Use an integer scaling factor (200% recommended).
+
+Fractional scaling requires more compute than integer scaling. This is more noticeable in applications where Wayland completes more refreshes.
