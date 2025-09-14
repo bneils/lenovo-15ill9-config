@@ -1,20 +1,31 @@
 #!/bin/bash
 
-# For the Thinkpad T480
-
 DIR=/sys/class/power_supply
+
+
+CONSERVE="/sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode"
+
+if [ ! -f "$CONSERVE" ] ; then
+	echo "Could not find conservation mode file."
+	exit 1
+fi
+
+get_charge_threshold() {
+	if [ -f "$CONSERVE" ] && [ "$(cat "$CONSERVE")" -eq 1 ]; then
+		echo 80
+	else
+		echo 100
+	fi
+}
 
 # arg1: BAT0 or BAT1 that is charging
 show_est() {
   power=$(cat "$DIR/$1/power_now")
   bat0_ef=$(cat "$DIR/BAT0/energy_full")
-  bat1_ef=$(cat "$DIR/BAT1/energy_full")
-  bat0_et=$(cat "$DIR/BAT0/charge_control_end_threshold")
-  bat1_et=$(cat "$DIR/BAT1/charge_control_end_threshold")
-  final=$(("($bat0_ef * $bat0_et + $bat1_ef * $bat1_et) / 100"))
+  bat0_et=$(get_charge_threshold)
+  final=$(("($bat0_ef * $bat0_et) / 100"))
   charge0=$(cat "$DIR/BAT0/energy_now")
-  charge1=$(cat "$DIR/BAT1/energy_now")
-  ttf=$(("60 * ($final - $charge0 - $charge1) / $power"))
+  ttf=$(("60 * ($final - $charge0) / $power"))
   hours=$(("$ttf / 60"))
   mins=$(printf "%02d" $(("$ttf % 60")))
   echo "$hours":"$mins"
