@@ -20,6 +20,8 @@ Install `sof-firmware` to fix sound.
 ## Suspend
 Sleep disables fans upon resume. To enable hibernation you must change the power management settings and extend your swap page to your RAM size (16 or 32).
 
+Please see my [script](https://github.com/bneils/yoga-slim-7i-aura-suspend) for a workaround.
+
 ## Codecs
 On OpenSUSE, you can install codecs by installing `opi` and running `opi codecs`.
 
