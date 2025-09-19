@@ -13,4 +13,9 @@ sed -e '/{{DRIVER_MODE}}/ {' -e "r $COPY" -e 'd' -e '}' -i "$DEST"
 
 sudo cp "$DEST" /etc/tlp.d/10-yoga.conf
 sudo systemctl restart tlp
+status=$?
 
+if [ "$status" -ne 0 ]; then
+	echo "Failed to start TLP."
+	exit 1
+fi

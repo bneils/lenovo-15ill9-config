@@ -22,6 +22,12 @@ Sleep disables fans upon resume. To enable hibernation you must change the power
 
 Please see my [script](https://github.com/bneils/yoga-slim-7i-aura-suspend) for a workaround.
 
+## Wayland or X11
+Wayland uses less power than X11, but has some bugs --- see below. I recommend it for laptops.
+
+## LibreOffice
+Unfortunately, one side effect under Wayland is that the LibreOffice suite (e.g Writer) is unusably laggy. It is recommended to use X11 for these applications by using `QT_QPA_PLATFORM=xcb` for each application launcher. This uses less power than setting X11 for all applications.
+
 ## Codecs
 On OpenSUSE, you can install codecs by installing `opi` and running `opi codecs`.
 
@@ -56,7 +62,7 @@ One major power drain is the display. Using a high brightness level can drain yo
 
 2. Set your display to 60 Hz.
 
-If you are watching YouTube, you should set your display to 60 Hz as there is no difference, and it reduces the workload by your GPU.
+If you are watching YouTube, you should set your display to 60 Hz to reduce the workload on your GPU.
 
 3. Use an integer scaling factor (200% recommended).
 
