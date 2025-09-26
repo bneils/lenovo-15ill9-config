@@ -18,7 +18,7 @@ Verify changes with `tlp-stat -p`.
 Install `sof-firmware` to fix sound.
 
 ## Suspend
-Sleep disables fans upon resume. To enable hibernation you must change the power management settings and extend your swap page to your RAM size (16 or 32).
+Sleep disables fans upon resume. To enable hibernation you must change the power management settings and extend your swap page to your RAM size (16 or 32). **Note**: enabling swap results in stuttery lag when RAM usage reaches a certain threshold, even with `vm.swappiness=0`. You must disable swap using `swapoff -a` to avoid this. Check to confirm that the below script only enables swap when entering hibernation.
 
 Please see my [script](https://github.com/bneils/yoga-slim-7i-aura-suspend) for a workaround.
 
