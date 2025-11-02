@@ -22,6 +22,13 @@ Sleep disables fans upon resume. To enable hibernation you must change the power
 
 Please see my [script](https://github.com/bneils/yoga-slim-7i-aura-suspend) for a workaround.
 
+## Graphics
+Please verify that OpenGL and Vulkan are using your iGPU. The default OpenSUSE installation uses software rendering for Vulkan on Xe2.
+
+* OpenGL: `glxinfo | grep "OpenGL renderer"`.
+
+* Vulkan: `vkcube`. `llvmpipe` is software rendering. Install `libvulkan_intel` and restart.
+
 ## Wayland or X11
 Wayland uses less power than X11, but has some bugs --- see below. I recommend it for laptops.
 
