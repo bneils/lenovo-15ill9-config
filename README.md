@@ -77,3 +77,7 @@ If you are watching YouTube, you should set your display to 60 Hz to reduce the 
 3. Use an integer scaling factor (200% recommended).
 
 Fractional scaling requires more compute than integer scaling. This is more noticeable in applications where Wayland completes more refreshes.
+
+4. Consider disabling fractional refresh rates
+
+I encountered this problem for my 2880x1800 display that was set to 2560x1600 (under Wayland). Everything seems to play nicer when the refresh rate is set to 60.0 and not 59.9.
