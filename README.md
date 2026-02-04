@@ -15,13 +15,15 @@ The script `enable` can be used to do this. If you'd like, run `./enable schedut
 Verify changes with `tlp-stat -p`.
 
 ## Sound
-Install `sof-firmware` to fix sound. Beware: kernel versions from 6.17.8 to 6.18 introduce a regression that causes the sound card to not be recognized, which affects HDMI, headphone jack, and internal speakers. To my knowledge, I don't know if it affects USB wireless speakers like those from SteelSeries. A fix is introduced in 6.19, so only upgrade to that version, or stay on 6.17.7.
+Install `sof-firmware` to fix sound. Beware: kernel versions from 6.17.8 to 6.18 introduce a regression that causes the sound card to not be recognized, which affects HDMI, headphone jack, and internal speakers. To my knowledge, I don't know if it affects USB wireless speakers like those from SteelSeries.
+
+A fix is introduced in 6.18.8 so only upgrade to that version, or stay on 6.17.7.
 
 ## Suspend
 Sleep disables fans upon resume. According to Tropicaal on the [Arch wiki](https://wiki.archlinux.org/title/Lenovo_Yoga_Slim_7i_Aura_(15ILL9)),
 > When waking from s2idle, the kernel does not call a required method in Microsoft's Modern Standby extensions to wake the embedded controller from its low power state. This results in loss of fan control and some keyboard functionality, which may be restored by manually waking the EC with the appropriate ACPI methods. 
 
-There is luckily a fix, which comes in the form of Tropicaal's script that sends an ACPI signal to take the EC out of low-power after suspend.
+In the meantime, please install Tropicaal's script that sends an ACPI signal to take the EC out of low-power after suspend.
 
 Deprecated: ~~Please see my [script](https://github.com/bneils/yoga-slim-7i-aura-suspend) for a workaround.~~
 
