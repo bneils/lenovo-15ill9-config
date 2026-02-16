@@ -8,7 +8,7 @@
 * Intel Ultra 7 256V
 
 ## TLP (EAS scheduler)
-Install `tlp` and enable with `systemctl enable --now tlp`. Ensure you are on kernel 6.16 or later to make use of Intel Energy Aware Scheduling using the `schedutil` governor. It is required to set `intel_pstate=passive` manually or via TLP to make use of it.
+Install `tlp` and `tlp-pd` and enable with `systemctl enable --now tlp tlp-pd`. Ensure you are on kernel 6.16 or later to make use of Intel Energy Aware Scheduling using the `schedutil` governor. It is required to set `intel_pstate=passive` manually or via TLP to make use of it.
 
 The script `enable` can be used to do this. If you'd like, run `./enable schedutil` to use EAS and `./enable powersave` to use the traditional driver. This will automatically apply the changes to TLP for you in the directory `/etc/tlp.d/` (ensure nothing is conflicting). You can experiment with disabling EAS, since it might actually *lower* power usage in some workloads. The only effect this will have is that load will be evenly distributed among all P and E-cores. 
 
