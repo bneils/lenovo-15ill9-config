@@ -15,12 +15,20 @@ The script `enable` can be used to do this. If you'd like, run `./enable schedut
 Verify changes with `tlp-stat -p`.
 
 ## Sound
-Install `sof-firmware` to fix sound.
+Install `sof-firmware` to fix sound. Beware: kernel versions from 6.17.8 to 6.18 introduce a regression that causes the sound card to not be recognized, which affects HDMI, headphone jack, and internal speakers. To my knowledge, I don't know if it affects USB wireless speakers like those from SteelSeries.
+
+A fix is introduced in 6.18.8 so only upgrade to that version, or stay on 6.17.7.
 
 ## Suspend
-Sleep disables fans upon resume. To enable hibernation you must change the power management settings and extend your swap page to your RAM size (16 or 32). **Note**: enabling swap results in stuttery lag when RAM usage reaches a certain threshold, even with `vm.swappiness=0`. You must disable swap using `swapoff -a` to avoid this. Check to confirm that the below script only enables swap when entering hibernation.
+Sleep disables fans upon resume. According to Tropicaal on the [Arch wiki](https://wiki.archlinux.org/title/Lenovo_Yoga_Slim_7i_Aura_(15ILL9)),
+> When waking from s2idle, the kernel does not call a required method in Microsoft's Modern Standby extensions to wake the embedded controller from its low power state. This results in loss of fan control and some keyboard functionality, which may be restored by manually waking the EC with the appropriate ACPI methods. 
 
-Please see my [script](https://github.com/bneils/yoga-slim-7i-aura-suspend) for a workaround.
+In the meantime, please install Tropicaal's script that sends an ACPI signal to take the EC out of low-power after suspend.
+
+Deprecated: ~~Please see my [script](https://github.com/bneils/yoga-slim-7i-aura-suspend) for a workaround.~~
+
+## Swap
+To enable hibernation you must change the power management settings and extend your swap page to your RAM size (16 or 32). **Note**: enabling swap has resulted in stuttery lag when RAM usage reaches a certain threshold for **myself**, even with `vm.swappiness=0`. You might want to disable swap using `swapoff -a` to avoid this. Check to confirm that the below script only enables swap when entering hibernation.
 
 ## Graphics
 Please verify that OpenGL and Vulkan are using your iGPU. The default OpenSUSE installation uses software rendering for Vulkan on Xe2.
@@ -45,7 +53,7 @@ Verify that `intel-media-driver` is installed and that `libva-intel-driver` or `
 
 ## Hardware acceleration
 
-In Firefox, ensure you've done these things:
+In Firefox, ensure you've done these (probably unnecessary) things:
 
 1. type `about:config` in the address bar.
 2. type `gfx.webrender.all` and set it to true.
@@ -56,28 +64,32 @@ In Firefox, ensure you've done these things:
 7. type `media.rdd-vpx.enabled` and set it to true.
 8. type `gfx.webrender.direct` and set it to true.
 
-Firefox has poor defaults, so some of the above options might not be enabled by default. The `layers.*` options force hardware acceleration to be enabled.
+Some of the above options might not be enabled by default. The `layers.*` options force hardware acceleration to be enabled.
 
 [Source](https://www.reddit.com/r/linux/comments/xcikym/tutorial_how_to_enable_hardware_video/)
 
 Open `about:support` and verify you see the line "Compositing: WebRender" and not "WebRender (Software)".
 
-## Display
+## Display (important)
 
 Here are three suggestions to decrease power usage in instances where Wayland is using a lot of your CPU:
 
 1. Decrease brightness.
 
-One major power drain is the display. Using a high brightness level can drain your battery, and some numbers suggest that power increases at about 0.4 watts / 10% brightness. You may want to purchase a matte screen film if your screen is glossy.
+One major power drain is the display. Using a high brightness level can drain your battery, and my napkin math suggests that power increases at about 0.4 watts / 10% brightness. You may want to purchase a matte screen film if your screen is too glossy.
 
 2. Set your display to 60 Hz.
 
-If you are watching YouTube, you should set your display to 60 Hz to reduce the workload on your GPU.
+If you are watching YouTube, web browsing, or writing, you should set your display to 60 Hz to reduce the GPU's general workload.
 
 3. Use an integer scaling factor (200% recommended).
 
 Fractional scaling requires more compute than integer scaling. This is more noticeable in applications where Wayland completes more refreshes.
 
-4. Consider disabling fractional refresh rates
+4. Decrease resolution
+
+As a last-ditch effort to increase battery life, I would suggest lowering the resolution by an integer factor. I have not found significant gains by doing this, but you may want to experiment.
+
+5. Consider disabling fractional refresh rates
 
 I encountered this problem for my 2880x1800 display that was set to 2560x1600 (under Wayland). Everything seems to play nicer when the refresh rate is set to 60.0 and not 59.9.
