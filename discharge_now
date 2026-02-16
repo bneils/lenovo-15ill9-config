@@ -21,6 +21,9 @@ get_charge_threshold() {
 # arg1: BAT0 or BAT1 that is charging
 show_est() {
   power=$(cat "$DIR/$1/power_now")
+  if [ "$power" -eq 0 ] ; then
+	return
+  fi
   bat0_ef=$(cat "$DIR/BAT0/energy_full")
   bat0_et=$(get_charge_threshold)
   final=$(("($bat0_ef * $bat0_et) / 100"))
@@ -40,7 +43,7 @@ report_watts() {
   then 
     trunc=$(("$power / 1000000"))
     dec=$(("$power % 1000000 / 100000"))
-    echo "$trunc.$dec W"
+    echo "$trunc.$dec"
   fi
 }
 
