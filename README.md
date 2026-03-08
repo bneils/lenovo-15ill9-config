@@ -44,7 +44,9 @@ Wayland uses less power than X11, but has some bugs --- see below. I recommend i
 Unfortunately, one side effect under Wayland is that the LibreOffice suite (e.g Writer) is unusably laggy. It is recommended to use X11 for these applications by using `QT_QPA_PLATFORM=xcb` for each application launcher. This uses less power than setting X11 for all applications.
 
 ## Visual Studio Code
-To avoid the ["This browser supports WebGPU but it appears to be disabled"](https://github.com/microsoft/vscode/issues/235201) error when enabling hardware acceleration in VScode, use the flags `--enable-unsafe-webgpu --enable-features=Vulkan,UseSkiaRenderer` provided by @kibibites.
+To avoid the ["This browser supports WebGPU but it appears to be disabled"](https://github.com/microsoft/vscode/issues/235201) error when enabling hardware acceleration in VScode, use the flags `--enable-unsafe-webgpu --enable-features=Vulkan,UseSkiaRenderer` provided by @kibibites. In your settings JSON, include the line `"editor.experimentalGpuAcceleration": "on"`.
+
+Font ligatures do **not** work with [GPU acceleration](https://github.com/microsoft/vscode/issues/254503).
 
 ## Codecs
 On OpenSUSE, you can install codecs by installing `opi` and running `opi codecs`.
