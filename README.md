@@ -2,9 +2,9 @@
 (also goes by Lenovo Yoga Slim 7i Aura)
 
 ## Environment
-* Kernel 6.16
+* Kernel >=6.19
 * OpenSUSE Tumbleweed
-* Wayland, KDE Plasma
+* KDE Plasma (Wayland)
 * Intel Ultra 7 256V
 
 ## TLP (EAS scheduler)
@@ -14,23 +14,29 @@ The script `enable` can be used to do this. If you'd like, run `./enable schedut
 
 Verify changes with `tlp-stat -p`.
 
-## Sound
+There is a good [article](https://www.dedoimedo.com/computers/linux-power-management-tlp.html) that discusses using TLP to tweak power management, which I think offers a good perspective on tuning as a whole. TLP can definitely improve your power usage, but at the cost of responsiveness and performance.
+
+## Previous sound issues
 Install `sof-firmware` to fix sound. Beware: kernel versions from 6.17.8 to 6.18 introduce a regression that causes the sound card to not be recognized, which affects HDMI, headphone jack, and internal speakers. To my knowledge, I don't know if it affects USB wireless speakers like those from SteelSeries.
 
 A fix is introduced in 6.18.8 so only upgrade to that version, or stay on 6.17.7.
 
 ## Suspend
-Sleep disables fans upon resume. According to Tropicaal on the [Arch wiki](https://wiki.archlinux.org/title/Lenovo_Yoga_Slim_7i_Aura_(15ILL9)),
-> When waking from s2idle, the kernel does not call a required method in Microsoft's Modern Standby extensions to wake the embedded controller from its low power state. This results in loss of fan control and some keyboard functionality, which may be restored by manually waking the EC with the appropriate ACPI methods. 
+~~Sleep disables fans upon resume. According to Tropicaal on the [Arch wiki](https://wiki.archlinux.org/title/Lenovo_Yoga_Slim_7i_Aura_(15ILL9)),~~
+> ~~When waking from s2idle, the kernel does not call a required method in Microsoft's Modern Standby extensions to wake the embedded controller from its low power state. This results in loss of fan control and some keyboard functionality, which may be restored by manually waking the EC with the appropriate ACPI methods.~~
 
-In the meantime, please install Tropicaal's script that sends an ACPI signal to take the EC out of low-power after suspend.
+~~In the meantime, please install Tropicaal's script that sends an ACPI signal to take the EC out of low-power after suspend.~~
+
+Fixed as of latest kernel (>=6.19). 
 
 Deprecated: ~~Please see my [script](https://github.com/bneils/yoga-slim-7i-aura-suspend) for a workaround.~~
 
-## Swap
-To enable hibernation you must change the power management settings and extend your swap page to your RAM size (16 or 32). **Note**: enabling swap has resulted in stuttery lag when RAM usage reaches a certain threshold for **myself**, even with `vm.swappiness=0`. You might want to disable swap using `swapoff -a` to avoid this. Check to confirm that the below script only enables swap when entering hibernation.
+## Swap (maybe)
+To enable hibernation you must change the power management settings and extend your swap page to your RAM size (16 or 32). **Note**: enabling swap has **personally** resulted in stuttery lag when RAM usage reaches a certain threshold for **myself**, even with `vm.swappiness=0`. You might want to disable swap using `swapoff -a` to avoid this. Check to confirm that the below script only enables swap when entering hibernation.
 
-## Graphics
+I haven't had anyone else to confirm this, but I think it's just due to how swap works.
+
+## OpenGL/Vulkan drivers
 Please verify that OpenGL and Vulkan are using your iGPU. The default OpenSUSE installation uses software rendering for Vulkan on Xe2.
 
 * OpenGL: `glxinfo | grep "OpenGL renderer"`.
@@ -44,7 +50,9 @@ Wayland uses less power than X11, but has some bugs --- see below. I recommend i
 Unfortunately, one side effect under Wayland is that the LibreOffice suite (e.g Writer) is unusably laggy. It is recommended to use X11 for these applications by using `QT_QPA_PLATFORM=xcb` for each application launcher. This uses less power than setting X11 for all applications.
 
 ## Visual Studio Code
-To avoid the ["This browser supports WebGPU but it appears to be disabled"](https://github.com/microsoft/vscode/issues/235201) error when enabling hardware acceleration in VScode, use the flags `--enable-unsafe-webgpu --enable-features=Vulkan,UseSkiaRenderer` provided by @kibibites.
+To avoid the ["This browser supports WebGPU but it appears to be disabled"](https://github.com/microsoft/vscode/issues/235201) error when enabling hardware acceleration in VScode, use the flags `--enable-unsafe-webgpu --enable-features=Vulkan,UseSkiaRenderer` provided by @kibibites. In your settings JSON, include the line `"editor.experimentalGpuAcceleration": "on"`.
+
+Font ligatures do **not** work with [GPU acceleration](https://github.com/microsoft/vscode/issues/254503).
 
 ## Codecs
 On OpenSUSE, you can install codecs by installing `opi` and running `opi codecs`.
@@ -90,6 +98,6 @@ Fractional scaling requires more compute than integer scaling. This is more noti
 
 As a last-ditch effort to increase battery life, I would suggest lowering the resolution by an integer factor. I have not found significant gains by doing this, but you may want to experiment.
 
-5. Consider disabling fractional refresh rates
+5. Consider avoiding weird display configurations
 
-I encountered this problem for my 2880x1800 display that was set to 2560x1600 (under Wayland). Everything seems to play nicer when the refresh rate is set to 60.0 and not 59.9.
+I encountered this problem for my 2880x1800 display that was set to 2560x1600 (under Wayland). Everything seems to play nicer when you don't demand odd scaling factors.
