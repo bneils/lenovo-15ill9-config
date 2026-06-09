@@ -101,3 +101,5 @@ As a last-ditch effort to increase battery life, I would suggest lowering the re
 5. Consider avoiding weird display configurations
 
 I encountered this problem for my 2880x1800 display that was set to 2560x1600 (under Wayland). Everything seems to play nicer when you don't demand odd scaling factors.
+
+

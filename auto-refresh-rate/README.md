@@ -55,7 +55,7 @@ ACTION=="change",SUBSYSTEM=="power_supply",ENV{POWER_SUPPLY_ONLINE}=="1",RUN+="/
 Then reload udev with:
 
 ```
-# udevadm control --reload-rules
+# udevadm control --reload
 # udevadm trigger
 ```
 
