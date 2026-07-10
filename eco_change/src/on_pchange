@@ -1,0 +1,25 @@
+#!/bin/bash
+
+# Passes arguments to user scripts that tune the system to lower power use
+# depending on AC/battery state
+
+BAT="/sys/class/power_supply/BAT0"
+LOCK="/dev/shm/pchange_lock"
+
+on_ac() { ! [ "$(cat "$BAT/status")" = "Discharging" ]; }
+update() {
+    if on_ac; then
+    	screen_mode perf 2>/dev/null
+    	bluetooth on >/dev/null
+    else
+    	screen_mode eco 2>/dev/null
+    	bluetooth off >/dev/null
+    fi
+}
+
+[ -f "$LOCK" ] && exit
+touch "$LOCK"
+update
+sleep 5
+update
+rm "$LOCK"

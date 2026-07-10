@@ -1,0 +1,90 @@
+#!/usr/bin/env python3
+from json import loads
+from json.decoder import JSONDecodeError
+from os import environ
+from shutil import which
+from subprocess import run
+from sys import argv, stderr
+
+
+def kscreen_doctor_set_mode(output, mode):
+    # Run everything inside the user's environment context
+
+    # Make sure sudo passes the variables we gave it
+    completed = run(
+        ["kscreen-doctor", f"output.{output}.mode.{mode}"],
+        capture_output=True,
+    )
+    # developer doesn't use stderr or return codes meaningfully
+    success = "Taddaaa" in completed.stderr.decode()
+    if not success:
+        raise RuntimeError(
+            "'kscreen-doctor' failed with " + repr(completed.stderr.decode())
+        )
+
+
+if __name__ == "__main__":
+    if not which("kscreen-doctor"):
+        stderr.write(
+            f"{__file__}: kscreen-doctor is not installed on your system or is not in your PATH.\n"
+        )
+        exit(1)
+
+    with open("/tmp/env.out", "w") as f:
+        f.write(repr(environ))
+
+    accepted_args = ("perf", "eco")
+    if len(argv) < 2 or argv[1] not in accepted_args:
+        stderr.write(f"not an accepted argument, wanted {accepted_args}\n")
+        exit(1)
+
+    completed = run(
+        ["kscreen-doctor", "-j"],
+        capture_output=True,
+    )
+    try:
+        moninfo = loads(completed.stdout.decode())
+    except JSONDecodeError:
+        stderr.write("'kscreen-doctor' failed with " + repr(completed.stderr.decode()))
+        exit(1)
+
+    # use user-provided arguments to determine whether we pick highest refresh or closest to 60
+    if argv[1] == "perf":
+
+        def select_mode(modes):
+            return max(modes, key=lambda mode: mode["refreshRate"])
+    else:
+
+        def select_mode(modes):
+            return min(modes, key=lambda mode: abs(60 - mode["refreshRate"]))
+
+    for monitor in moninfo["outputs"]:
+        # should always be true
+        if not monitor["connected"]:
+            continue
+
+        # get the largest screen dimension, usually the default
+        max_width = max(mode["size"]["width"] for mode in monitor["modes"])
+        max_height = max(mode["size"]["height"] for mode in monitor["modes"])
+
+        # grab the biggest mode
+        candidates = [
+            mode
+            for mode in monitor["modes"]
+            if mode["size"] == {"width": max_width, "height": max_height}
+        ]
+        # just in case that's invalid, grab by largest width
+        if not candidates:
+            stderr.write(f"{__file__}: warning: using largest width instead of w/h\n")
+            candidates = [
+                mode for mode in monitor["modes"] if mode["size"]["width"] == max_width
+            ]
+
+        mode = select_mode(candidates)
+
+        # apply the setting
+        try:
+            kscreen_doctor_set_mode(monitor["name"], mode["id"])
+        except RuntimeError as e:
+            stderr.write(f"{__file__}: " + str(e))
+            exit(1)

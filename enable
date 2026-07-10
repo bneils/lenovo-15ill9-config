@@ -1,7 +1,7 @@
 #!/bin/bash
 
-if [ "$EUID" -eq 0 ]; then
-	echo "Please don't run me as root using sudo. I will prompt you." >&2
+if [ "$EUID" -ne 0 ]; then
+	echo "Not root. Abort." >&2
 	exit 1
 fi
 
@@ -14,9 +14,8 @@ TEMPLATE=conf/template.conf
 DEST=/etc/tlp.d/10-yoga.conf
 PRESET="conf/$1.conf"
 
-sudo cp "$TEMPLATE" "$DEST"
-sudo sed -e '/#INCLUDE_DRIVER#/ {' -e "r $PRESET" -e 'd' -e '}' -i "$DEST"
-sudo systemctl restart tlp
+cat "$TEMPLATE" "$PRESET" > "$DEST"
+systemctl restart tlp
 
 status=$?
 
