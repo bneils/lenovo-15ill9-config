@@ -1,0 +1,48 @@
+#!/bin/sh
+
+# understanding what a tile is:
+# https://docs.kernel.org/gpu/xe/xe_tile.html
+
+# for distinguishing between gt0 and gt1:
+# https://kernel.org/doc/html/next/gpu/driver-uapi.html#c.drm_xe_gt
+
+# for a diagram of gt0 and gt1:
+# https://kernel.org/doc/html/next/gpu/driver-uapi.html#drm-xe-uapi
+
+# for documentation on read-writable sysfs paths in xe2:
+# https://docs.kernel.org/gpu/xe/xe_gt_freq.html
+
+# for me, these are the default limits:
+# gt0: 550 and 1950 (3d gaming gpu)
+# gt1: 400 and 1200 (media gpu)
+
+# to monitor the current gpu frequency, use `nvtop` or monitor curfreq.
+
+if [ "$1" = "" ] || [ "$2" = "" ] ; then
+  echo "error: missing minFreq or maxFreq"
+  exit 1
+fi
+
+min_freq=$1
+max_freq=$2
+
+tile_fs=/sys/class/drm/card0/device/tile0
+gt0_freq="$tile_fs/gt0/freq0"
+
+if [ "$min_freq" -ne 0 ] ; then
+  echo "$min_freq" | sudo tee "$gt0_freq/min_freq" >/dev/null
+  err=$?
+  if [ "$err" -ne 0 ] ; then
+    echo "abort."
+    exit 1
+  fi
+fi
+
+if [ "$max_freq" -ne 0 ] ; then
+  echo "$max_freq" | sudo tee "$gt0_freq/max_freq" >/dev/null
+  err=$?
+  if [ "$err" -ne 0 ] ; then
+    echo "abort."
+    exit 1
+  fi
+fi
