@@ -1,5 +1,10 @@
 #!/bin/sh
 
+# Note: I wrote this without first checking TLP's documentation.
+# https://linrunner.de/tlp/settings/graphics.html
+#
+# Basically, there is no need to mess with this script, unless you're making live changes.
+
 # understanding what a tile is:
 # https://docs.kernel.org/gpu/xe/xe_tile.html
 
